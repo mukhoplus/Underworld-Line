@@ -2,7 +2,7 @@ import net from 'net';
 import chalk from 'chalk';
 const PORT = 2022;
 
-export function getCurrentTime(){
+function getCurrentTime(){
     const today = new Date();   
     let year = today.getFullYear();
     let month = today.getMonth() + 1;

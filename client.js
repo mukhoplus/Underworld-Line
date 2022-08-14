@@ -2,6 +2,7 @@ import net from 'net';
 import chalk from 'chalk';
 import readline from 'readline';
 const PORT = 2022;
+const HOST = '127.0.0.1';
 
 const rl = readline.createInterface({
     input: process.stdin,
@@ -10,7 +11,7 @@ const rl = readline.createInterface({
 
 let login = false;
 let ID = '';
-const client = net.connect({port: PORT, host: '127.0.0.1'}, ()=>{
+const client = net.connect({port: PORT, host: HOST}, ()=>{
     client.setEncoding('utf8');
     
     if(!login) process.stdout.write(chalk.blue(`아이디를 입력하세요: `));
