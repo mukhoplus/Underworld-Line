@@ -40,9 +40,7 @@ const server = net.createServer((client)=>{
                     }
                 }
                 
-                if(dup){
-                    client.write(JSON.stringify({status: 110, body:'중복된 아이디입니다. 다시 시도하세요.'}));
-                }
+                if(dup) client.write(JSON.stringify({status: 110, body:'중복된 아이디입니다. 다시 시도하세요.'}));
                 else{
                     client.name = d.body;
                     users.push(client);
@@ -68,7 +66,7 @@ const server = net.createServer((client)=>{
             users.splice(index, 1);
             
             const curTime = getCurrentTime();
-            console.log(chalk.blue(`현재 인원 : ${users.length}명`));
+            console.log(chalk.yellow(`현재 인원 : ${users.length}명`));
             console.log(chalk.blue(`[${curTime}] ${client.name}님이 퇴장했어요.`));
             for(let user of users) user.write(JSON.stringify({status: 150, body:`${client.name}`}));
         }
@@ -77,6 +75,7 @@ const server = net.createServer((client)=>{
 
 // 포트 수신 시작
 server.listen(PORT, '0.0.0.0', ()=>{
+    console.clear();
     console.log(chalk.blue(`* Port ${PORT}에서 서버가 열렸습니다.\n`));
 
     server.on('error', (err)=>{

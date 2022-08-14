@@ -14,7 +14,8 @@ let ID = '';
 const client = net.connect({port: PORT, host: HOST}, ()=>{
     client.setEncoding('utf8');
     
-    if(!login) process.stdout.write(chalk.blue(`아이디를 입력하세요: `));
+    console.clear();
+    process.stdout.write(chalk.blue(`아이디를 입력하세요: `)); 
 
     rl.on('line', (line)=>{
         if(line !== ''){
@@ -53,7 +54,7 @@ const client = net.connect({port: PORT, host: HOST}, ()=>{
     });
 
     client.on('close', ()=>{
-        console.log(chalk.blue(`연결이 끊겼습니다.`));
+        console.log(chalk.blue(`서버와 연결이 끊겼습니다.`));
         process.exit();
     });
 });
