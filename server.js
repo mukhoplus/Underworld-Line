@@ -19,11 +19,15 @@ function getCurrentTime(){
     return `${year}-${month}-${day} ${hour}:${minute}:${second}`;
 }
 
+function getCurrentUserCount(){
+    console.log(chalk.yellow(`현재 인원 : ${users.length}명`));
+}
+
 let users = [];
 
 const server = net.createServer((client)=>{
     client.setEncoding('utf8');
-    
+
     // 데이터 수신
     client.on('data', (data)=>{
         let d = JSON.parse(data);
@@ -44,18 +48,18 @@ const server = net.createServer((client)=>{
                 else{
                     client.name = d.body;
                     users.push(client);
-                    console.log(chalk.blue(`현재 인원 : ${users.length}명`));
+                    getCurrentUserCount();
                     console.log(chalk.blue(`[${curTime}] ${d.body}님이 접속했어요.(IP 주소 : ${client.localAddress})`));
                     for(let user of users) user.write(JSON.stringify({status: 101, body:`${d.body}님이 들어왔습니다.`}));
                 }
-                break;
+            break;
             case 200: // 채팅 전송
                 console.log(chalk.green(`[${curTime}] ${d.body}`));
                 for(let user of users){
                     if(client.name === user.name) continue; // 본인에게는 전송하지 않음
                     user.write(JSON.stringify({status: 201, body:`${d.body}`})); // 모든 유저에게 전송
                 }
-                break;
+            break;
         }
     });
 
@@ -66,7 +70,7 @@ const server = net.createServer((client)=>{
             users.splice(index, 1);
             
             const curTime = getCurrentTime();
-            console.log(chalk.yellow(`현재 인원 : ${users.length}명`));
+            getCurrentUserCount()
             console.log(chalk.blue(`[${curTime}] ${client.name}님이 퇴장했어요.`));
             for(let user of users) user.write(JSON.stringify({status: 150, body:`${client.name}`}));
         }
