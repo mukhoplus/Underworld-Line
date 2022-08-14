@@ -16,7 +16,7 @@ export function getCurrentTime(){
     let second = today.getSeconds();
     second = second >= 10 ? second : '0' + second;
 
-    return `${year}-${month}-${day} ${hour}:${minute}:${second}.${millisecond}`;
+    return `${year}-${month}-${day} ${hour}:${minute}:${second}`;
 }
 
 let users = [];
@@ -27,58 +27,52 @@ const server = net.createServer((client)=>{
     // 데이터 수신
     client.on('data', (data)=>{
         let d = JSON.parse(data);
-        const curTime = utils.getCurrentTime();
+        const curTime = getCurrentTime();
         
-        switch(d.type){
-            case 'CONNECT': // 클라이언트 접속
+        switch(d.status){
+            case 100: // 클라이언트 접속
                 // 중복 체크
                 let dup = false;
                 for(let user of users){
-                    if(user.name === d.content){
+                    if(user.name === d.body){
                         dup = true;
                         break;
                     }
                 }
                 
                 if(dup){
-                    client.write(JSON.stringify({type:'CONNECT', content:'중복된 아이디입니다. 다시 시도하세요.'}));
+                    client.write(JSON.stringify({status: 110, body:'중복된 아이디입니다. 다시 시도하세요.'}));
                 }
                 else{
-                    client.name = d.content;
+                    client.name = d.body;
                     users.push(client);
                     console.log(chalk.blue(`현재 인원 : ${users.length}명`));
-                    console.log(chalk.blue(`[${curTime}] ${d.content}님이 접속했어요.(IP 주소 : ${client.localAddress})`));
-                    for(let user of users) user.write(JSON.stringify({type: 'CONNECT', content:`${d.content}님이 들어왔습니다.`}));
+                    console.log(chalk.blue(`[${curTime}] ${d.body}님이 접속했어요.(IP 주소 : ${client.localAddress})`));
+                    for(let user of users) user.write(JSON.stringify({status: 101, body:`${d.body}님이 들어왔습니다.`}));
                 }
                 break;
-            case 'CHAT': // 채팅 전송
-                console.log(chalk.green(`[${curTime}] ${d.content}`));
+            case 200: // 채팅 전송
+                console.log(chalk.green(`[${curTime}] ${d.body}`));
                 for(let user of users){
                     if(client.name === user.name) continue; // 본인에게는 전송하지 않음
-                    user.write(JSON.stringify({type: 'CHAT', content:`${d.content}`})); // 모든 유저에게 전송
+                    user.write(JSON.stringify({status: 201, body:`${d.body}`})); // 모든 유저에게 전송
                 }
                 break;
-        }
-    });
-
-    // 오류 출력(강제 종료)
-    client.on('error', (err)=>{
-        for(let user of users){
-            if(client.name !== user.name) user.write(JSON.stringify({type:'CHAT', content:`${user.name}님이 퇴장했습니다.`}));
         }
     });
 
     // 접속 종료
     client.on('close', ()=>{
-        const index = users.indexOf(client);
-        users.splice(index, 1);
-        
-        const curTime = getCurrentTime();
-        console.log(chalk.blue(`현재 인원 : ${users.length} + '명`));
-        console.log(chalk.blue(`[${curTime}] ${client.name}님이 퇴장했어요.`));
-        //for(let s of sockets) s.write(JSON.stringify({type:'CHECKOUT', content:`${client.name}님이 퇴장했습니다.`}));
+        if(client.name !== undefined){
+            const index = users.indexOf(client);
+            users.splice(index, 1);
+            
+            const curTime = getCurrentTime();
+            console.log(chalk.blue(`현재 인원 : ${users.length}명`));
+            console.log(chalk.blue(`[${curTime}] ${client.name}님이 퇴장했어요.`));
+            for(let user of users) user.write(JSON.stringify({status: 150, body:`${client.name}`}));
+        }
     });
-
 });
 
 // 포트 수신 시작
