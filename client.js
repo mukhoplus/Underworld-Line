@@ -48,7 +48,7 @@ const client = net.connect({port: PORT, host: HOST}, ()=>{
     });
 
     client.on('error', (err)=>{
-        console.log(chalk.blue(`서버 오류가 발생했습니다.`));
+        console.log(chalk.red(`서버 오류가 발생했습니다.`));
         process.exit();
     });
 
