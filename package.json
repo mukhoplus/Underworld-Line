@@ -1,0 +1,21 @@
+{
+  "name": "underworld-line",
+  "version": "1.0.0",
+  "description": "버그없는 익명 채팅 프로그램을 목표로 합니다.",
+  "main": "client.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mukholisk/Underworld-Line.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Mukholisk/Underworld-Line/issues"
+  },
+  "homepage": "https://github.com/Mukholisk/Underworld-Line#readme"
+}
