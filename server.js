@@ -82,6 +82,25 @@ const server = net.createServer((client)=>{
                 const result = getUsers();
                 client.write(JSON.stringify({status: 211, body:`${result}`}));
             break;
+            case 220:
+                let check = false;
+
+                for(let user of users){
+                    if(user.name === d.to){ // 해당 유저가 있으면 dm 전송
+                        check = true;
+                        if(client.name === user.name){ // 단, 본인에게는 전송하지 못함.
+                            user.write(JSON.stringify({status: 222, body:'본인에게는 DM을 보낼 수 없습니다.'}));
+                            break;
+                        }
+                        
+                        user.write(JSON.stringify({status: 221, body:`DM) ${client.name} : ${d.body}`})); // 메세지 전송
+                        console.log(`[${curTime}] ${client.name} 유저가 ${user.name} 유저에게 DM을 보냈어요 -> ${d.body}`);
+                        client.write(JSON.stringify({status: 221, body:'DM 전송에 성공했습니다.'})); // 성공 알림
+                        break;
+                    }
+                }
+                if(!check) client.write(JSON.stringify({status: 222, body:'전송할 ID가 없습니다.'})); // 실패 알림
+            break;
         }
     });
 
@@ -106,6 +125,35 @@ server.listen(PORT, '0.0.0.0', ()=>{
                 if(line === '/users'){
                     console.log(chalk.yellow(`현재 인원 : ${getCurrentUserCount()}명`));
                     if(users.length !== 0) console.log(chalk.blue(getCurrentUserList()));
+                }
+                else if(line.startsWith('/w ')){
+                    const cmd = line.split(' ');
+                    const toUser = cmd[1];
+
+                    if(toUser !== ''){
+                        let check = false;
+
+                        for(let user of users){
+                            if(user.name === toUser){
+                                check = true;
+                                try{
+                                    const tempText = cmd.slice(2);
+                                    if(tempText.length === 0 || (tempText.length === 1 && tempText[0] === '')) throw '';
+                                    
+                                    let text = '';
+                                    for(let i=0; i<tempText.length; i++){
+                                        text += tempText[i];
+                                        if(i !== tempText.length-1) text += ' ';
+                                    }
+                                    user.write(JSON.stringify({status: 225, body: `${text}`}));
+                                }catch(e){
+                                    
+                                }
+                                break;
+                            }
+                        }
+                        if(!check) console.log(chalk.red('해당 유저가 없습니다.'));
+                    }
                 }
             }
             else for(let user of users) user.write(JSON.stringify({status: 250, body: `[Notice] ${line}`}));

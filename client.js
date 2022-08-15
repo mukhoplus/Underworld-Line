@@ -23,6 +23,26 @@ const client = net.connect({port: PORT, host: HOST}, ()=>{
             if(login){
                 if(line.startsWith('/')){
                     if(line === '/users') client.write(JSON.stringify({status: 210, body: `${line}`}));
+                    if(line.startsWith('/w ')){
+                        const cmd = line.split(' ');
+                        const toUser = cmd[1];
+
+                        if(toUser !== ''){
+                            try{
+                                const tempText = cmd.slice(2);
+                                if(tempText.length === 0 || (tempText.length === 1 && tempText[0] === '')) throw '';
+                                
+                                let text = '';
+                                for(let i=0; i<tempText.length; i++){
+                                    text += tempText[i];
+                                    if(i !== tempText.length-1) text += ' ';
+                                }
+                                client.write(JSON.stringify({status: 220, to: `${toUser}`, body: `${text}`}));
+                            }catch(e){
+                                
+                            }
+                        }
+                    }
                 }
                 else client.write(JSON.stringify({status: 200, body: `${ID} : ${line}`}));
             }
@@ -54,6 +74,15 @@ const client = net.connect({port: PORT, host: HOST}, ()=>{
             break;
             case 211:
                 console.log(d.body);
+            break;
+            case 221:
+                console.log(chalk.green(d.body));
+            break;
+            case 222:
+                console.log(chalk.red(d.body));
+            break;
+            case 225:
+                console.log(chalk.yellow(`To Server : ${d.body}`));
             break;
             case 250:
                 console.log(chalk.yellow(d.body));
