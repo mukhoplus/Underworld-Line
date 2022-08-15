@@ -37,6 +37,7 @@ const client = net.connect({port: PORT, host: HOST}, ()=>{
                 console.log(chalk.blue(`${d.body}`));
             break;
             case 110:
+            case 111:
                 console.log(chalk.red(`${d.body}`));
                 process.stdout.write(chalk.blue(`아이디를 입력하세요: `));
             break;
