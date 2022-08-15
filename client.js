@@ -53,7 +53,7 @@ const client = net.connect({port: PORT, host: HOST}, ()=>{
                 console.log(chalk.green(d.body));
             break;
             case 211:
-                console.log(chalk.green(d.body));
+                console.log(d.body);
             break;
             case 250:
                 console.log(chalk.yellow(d.body));
