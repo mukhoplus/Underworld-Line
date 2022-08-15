@@ -27,11 +27,11 @@
 5. 정보 전달은 객체를 통해 전달한다.
 6. Console Colour
     - 본인 입력 : 기본
-    - 서버 알림 : blue
-    - 오류 : red
-    - 채팅 : green
-    - 귓속말 : magenta
-    - 서버 공지, 서버로부터의 귓속말, 현재 인원 : yellow
+    - 서버 알림 : <span style="color:blue">blue</span>
+    - 오류 : <span style="color:red">red</span>
+    - 채팅 : <span style="color:green">green</span>
+    - 귓속말 : <span style="color:magenta">magenta</span>
+    - 서버 공지, 서버로부터의 귓속말, 현재 인원 : <span style="color:yellow">yellow</span>
 
 ## 추가 기능
 
