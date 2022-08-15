@@ -1,6 +1,7 @@
 import net from 'net';
 import chalk from 'chalk';
 import readline from 'readline';
+import { getPackedSettings } from 'http2';
 
 const PORT = 2022;
 
@@ -31,16 +32,16 @@ function getCurrentUserCount(){
     console.log(chalk.yellow(`현재 인원 : ${users.length}명`));
 }
 
+function getCurrentUserList(){
+    let result = [];
+    for(let user of users) result.push(user.name);
+    return result;
+}
+
 let users = [];
 
 const server = net.createServer((client)=>{
     client.setEncoding('utf8');
-
-    rl.on('line', (line)=>{
-        if(line !== ''){
-            client.write(JSON.stringify({status: 250, body: `[Notice] ${line}`}));
-        }
-    });
 
     client.on('data', (data)=>{
         let d = JSON.parse(data);
@@ -91,6 +92,20 @@ const server = net.createServer((client)=>{
 server.listen(PORT, '0.0.0.0', ()=>{
     console.clear();
     console.log(chalk.blue(`[${getCurrentTime()}] Port ${PORT}에서 서버가 열렸습니다.\n`));
+
+    rl.on('line', (line)=>{
+        if(line !== ''){
+            if(line.startsWith('/')){
+                if(line === '/users'){
+                    getCurrentUserCount();
+                    if(users.length !== 0) console.log(chalk.blue(getCurrentUserList()));
+                }
+            }
+            else{
+                for(let user of users) user.write(JSON.stringify({status: 250, body: `[Notice] ${line}`}));
+            }
+        }
+    });
 
     server.on('error', (err)=>{
         console.log(chalk.red(`[${getCurrentTime()}] 서버에 오류가 발생했습니다.`));
