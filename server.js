@@ -1,6 +1,13 @@
 import net from 'net';
 import chalk from 'chalk';
+import readline from 'readline';
+
 const PORT = 2022;
+
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
 
 function getCurrentTime(){
     const today = new Date();
@@ -28,6 +35,12 @@ let users = [];
 
 const server = net.createServer((client)=>{
     client.setEncoding('utf8');
+
+    rl.on('line', (line)=>{
+        if(line !== ''){
+            client.write(JSON.stringify({status: 250, body: `[Notice] ${line}`}));
+        }
+    });
 
     client.on('data', (data)=>{
         let d = JSON.parse(data);
