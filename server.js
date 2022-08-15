@@ -1,7 +1,6 @@
 import net from 'net';
 import chalk from 'chalk';
 import readline from 'readline';
-import { getPackedSettings } from 'http2';
 
 const PORT = 2022;
 
