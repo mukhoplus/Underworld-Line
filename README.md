@@ -12,9 +12,9 @@
 4. 서버/채팅 종료: ``Control + C``
 5. 기타
     - '\n'는 전달되지 않습니다.
-    - '/'로 시작하는 구문은 전달되지 않습니다. 현재 가능한 명령어는 다음과 같습니다.
-        - ``/users``
-        - ``/w ID TEXT``
+    - '/'로 시작하는 구문은 명령어 외에는 전달되지 않습니다. 현재 가능한 명령어는 다음과 같습니다.
+        - ``/users`` : 현재 인원과 접속한 아이디를 출력합니다.
+        - ``/w ID TEXT`` : ID에게 TEXT를 전송합니다. C2C, S2C가 가능합니다.
 
 ## 목표와 사전 설계
 
@@ -27,11 +27,11 @@
 5. 정보 전달은 객체를 통해 전달한다.
 6. Console Colour
     - 본인 입력 : 기본
-    - 서버 알림 : <span style="color:blue">blue</span>
-    - 오류 : <span style="color:red">red</span>
-    - 채팅 : <span style="color:green">green</span>
-    - 귓속말 : <span style="color:magenta">magenta</span>
-    - 서버 공지, 서버로부터의 귓속말, 현재 인원 : <span style="color:yellow">yellow</span>
+    - 서버 알림 : blue
+    - 오류 : red
+    - 채팅 : green
+    - 귓속말 : magenta
+    - 서버 공지, 서버로부터의 귓속말, 현재 인원 : yellow
 
 ## 추가 기능
 
@@ -68,4 +68,4 @@
 1. 서버 관리자 기능
     - IP 밴은 아직 제한사항이 있으므로 닉네임 밴 도입(실효성이 있는가?)
 2. 클라이언트 명령어 기능
-    - Client to Server whisper: 익명 채팅에 어울리지 않는 기능같다.
+    - Client to Server whisper: 익명 채팅에 어울리지 않는 기능 같다.
