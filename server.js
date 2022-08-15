@@ -29,13 +29,18 @@ function getCurrentTime(){
 }
 
 function getCurrentUserCount(){
-    console.log(chalk.yellow(`현재 인원 : ${users.length}명`));
+    return users.length;
 }
 
 function getCurrentUserList(){
     let result = [];
     for(let user of users) result.push(user.name);
     return result;
+}
+
+function getUsers(){
+    const result = chalk.yellow(`현재 인원 : ${getCurrentUserCount()}명`) + '\n' + chalk.blue(getCurrentUserList());
+    return result;   
 }
 
 let users = [];
@@ -62,7 +67,7 @@ const server = net.createServer((client)=>{
                 else{
                     client.name = d.body;
                     users.push(client);
-                    getCurrentUserCount();
+                    console.log(chalk.yellow(`현재 인원 : ${getCurrentUserCount()}명`));
                     console.log(chalk.blue(`[${curTime}] ${d.body}님이 접속했어요.(IP 주소 : ${client.localAddress})`));
                     for(let user of users) user.write(JSON.stringify({status: 101, body:`${d.body}님이 들어왔습니다.`}));
                 }
@@ -74,6 +79,10 @@ const server = net.createServer((client)=>{
                     user.write(JSON.stringify({status: 201, body:`${d.body}`}));
                 }
             break;
+            case 210:
+                const result = getUsers();
+                client.write(JSON.stringify({status: 211, body:`${result}`}));
+            break;
         }
     });
 
@@ -82,8 +91,7 @@ const server = net.createServer((client)=>{
             const index = users.indexOf(client);
             users.splice(index, 1);
             
-            getCurrentUserCount()
-            console.log(chalk.blue(`[${getCurrentTime()}] ${client.name}님이 퇴장했어요.`));
+            console.log(getUsers());
             for(let user of users) user.write(JSON.stringify({status: 150, body:`${client.name}`}));
         }
     });
@@ -97,13 +105,11 @@ server.listen(PORT, '0.0.0.0', ()=>{
         if(line !== ''){
             if(line.startsWith('/')){
                 if(line === '/users'){
-                    getCurrentUserCount();
+                    console.log(chalk.yellow(`현재 인원 : ${getCurrentUserCount()}명`));
                     if(users.length !== 0) console.log(chalk.blue(getCurrentUserList()));
                 }
             }
-            else{
-                for(let user of users) user.write(JSON.stringify({status: 250, body: `[Notice] ${line}`}));
-            }
+            else for(let user of users) user.write(JSON.stringify({status: 250, body: `[Notice] ${line}`}));
         }
     });
 

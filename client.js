@@ -20,7 +20,12 @@ const client = net.connect({port: PORT, host: HOST}, ()=>{
 
     rl.on('line', (line)=>{
         if(line !== ''){
-            if(login) client.write(JSON.stringify({status: 200, body: `${ID} : ${line}`}));
+            if(login){
+                if(line.startsWith('/')){
+                    if(line === '/users') client.write(JSON.stringify({status: 210, body: `${line}`}));
+                }
+                else client.write(JSON.stringify({status: 200, body: `${ID} : ${line}`}));
+            }
             else{
                 ID = line;
                 client.write(JSON.stringify({status: 100, body: `${line}`}));
@@ -45,6 +50,9 @@ const client = net.connect({port: PORT, host: HOST}, ()=>{
                 console.log(chalk.blue(`${d.body}님이 퇴장했습니다.`));
             break;
             case 201:
+                console.log(chalk.green(d.body));
+            break;
+            case 211:
                 console.log(chalk.green(d.body));
             break;
             case 250:
