@@ -76,7 +76,7 @@ const client = net.connect({port: PORT, host: HOST}, ()=>{
                 console.log(d.body);
             break;
             case 221:
-                console.log(chalk.green(d.body));
+                console.log(chalk.magenta(d.body));
             break;
             case 222:
                 console.log(chalk.red(d.body));
