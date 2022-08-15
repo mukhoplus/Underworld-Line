@@ -106,10 +106,12 @@ const server = net.createServer((client)=>{
 
     client.on('close', ()=>{
         if(client.name !== undefined){
+            const curTime = getCurrentTime();
             const index = users.indexOf(client);
             users.splice(index, 1);
             
-            console.log(getUsers());
+            console.log(chalk.yellow(`현재 인원 : ${getCurrentUserCount()}명`));
+            console.log(chalk.blue(`[${curTime}] ${client.name}님이 퇴장했어요.`));
             for(let user of users) user.write(JSON.stringify({status: 150, body:`${client.name}`}));
         }
     });
