@@ -62,7 +62,7 @@ const server = net.createServer((client)=>{
                 }
                 
                 if(dup) client.write(JSON.stringify({status: 110, body:'중복된 아이디입니다. 다시 시도하세요.'}));
-                else if(String(d.body).startsWith('/')) client.write(JSON.stringify({status: 111, body:'사용할 수 없는 아이디입니다. 다시 시도하세요.'}));
+                else if(String(d.body).startsWith('/') || String(d.body).includes(' ')) client.write(JSON.stringify({status: 111, body:'사용할 수 없는 아이디입니다. 다시 시도하세요.'}));
                 else{
                     client.name = d.body;
                     users.push(client);
