@@ -69,9 +69,8 @@ const server = net.createServer((client)=>{
             const index = users.indexOf(client);
             users.splice(index, 1);
             
-            const curTime = getCurrentTime();
             getCurrentUserCount()
-            console.log(chalk.blue(`[${curTime}] ${client.name}님이 퇴장했어요.`));
+            console.log(chalk.blue(`[${getCurrentTime()}] ${client.name}님이 퇴장했어요.`));
             for(let user of users) user.write(JSON.stringify({status: 150, body:`${client.name}`}));
         }
     });
@@ -80,13 +79,13 @@ const server = net.createServer((client)=>{
 // 포트 수신 시작
 server.listen(PORT, '0.0.0.0', ()=>{
     console.clear();
-    console.log(chalk.blue(`* Port ${PORT}에서 서버가 열렸습니다.\n`));
+    console.log(chalk.blue(`[${getCurrentTime()}] Port ${PORT}에서 서버가 열렸습니다.\n`));
 
     server.on('error', (err)=>{
-        console.log(chalk.red('서버에 오류가 발생했습니다.'));
+        console.log(chalk.red(`[${getCurrentTime()}] 서버에 오류가 발생했습니다.`));
     });
 
     server.on('close', ()=>{
-        console.log(chalk.blue('서버를 닫습니다.'));
+        console.log(chalk.blue(`[${getCurrentTime()}] 서버를 닫습니다.`));
     });
 });
