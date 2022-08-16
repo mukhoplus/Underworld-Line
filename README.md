@@ -72,3 +72,4 @@
     - Client to Server whisper: 익명 채팅에 어울리지 않는 기능 같다.
 3. remoteAddress 출력 확인
 4. 귓속말 로직 정규표현식으로 교체
+5. 모든 기능이 검증될 경우 log 정보 저장 및 Database로 회원가입 도입
