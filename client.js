@@ -17,30 +17,29 @@ const client = net.connect({port: setting.PORT, host: setting.HOST}, ()=>{
     process.stdout.write(chalk.blue(`아이디를 입력하세요: `)); 
 
     rl.on('line', (line)=>{
-        if(line !== ''){
-            if(login){
-                if(line.startsWith('/')){
-                    if(line === '/users') client.write(JSON.stringify({status: 210, body: `${line}`}));
-                    else if(line.startsWith('/w ')){
-                        const cmd = line.split(' ');
-                        const toUser = cmd[1];
+        if(line === '') return;
 
-                        if(toUser !== ''){
-                            try{
-                                const text = cmd.slice(2).join(' ');
-                                if(text === '') throw '';
-                                
-                                client.write(JSON.stringify({status: 220, to: `${toUser}`, body: `${text}`}));
-                            }catch(e){}
-                        }
-                    }
+        if(login){
+            if(line.startsWith('/')){
+                if(line === '/users') client.write(JSON.stringify({status: 210, body: `${line}`}));
+                else if(line.startsWith('/w ')){
+                    const cmd = line.split(' ');
+                    const toUser = cmd[1];
+
+                    if(toUser === '') return;
+                    try{
+                        const text = cmd.slice(2).join(' ');
+                        if(text === '') throw '';
+                        
+                        client.write(JSON.stringify({status: 220, to: `${toUser}`, body: `${text}`}));
+                    }catch(e){}
                 }
-                else client.write(JSON.stringify({status: 200, body: `${ID} : ${line}`}));
             }
-            else{
-                ID = line;
-                client.write(JSON.stringify({status: 100, body: `${line}`}));
-            }
+            else client.write(JSON.stringify({status: 200, body: `${ID} : ${line}`}));
+        }
+        else{
+            ID = line;
+            client.write(JSON.stringify({status: 100, body: `${line}`}));
         }
     });
 

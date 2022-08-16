@@ -22,8 +22,7 @@ export default class utils{
     }
     
     static getCurrentUserList(users){
-        let result = [];
-        for(let user of users) result.push(user.name);
+        const result = users.map(user => user.name);
         return result;
     }
     

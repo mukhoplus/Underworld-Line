@@ -66,21 +66,22 @@ const server = net.createServer((client)=>{
                         break;
                     }
                 }
+
                 if(!check) client.write(JSON.stringify({status: 222, body:'전송할 ID가 없습니다.'})); // 실패 알림
             break;
         }
     });
 
     client.on('close', ()=>{
-        if(client.name !== undefined){
-            const curTime = utils.getCurrentTime();
-            const index = users.indexOf(client);
-            users.splice(index, 1);
-            
-            console.log(chalk.yellow(`현재 인원 : ${utils.getCurrentUserCount(users)}명`));
-            console.log(chalk.blue(`[${curTime}] ${client.name}님이 퇴장했어요.`));
-            for(let user of users) user.write(JSON.stringify({status: 150, body:`${client.name}`}));
-        }
+        if(client.name === undefined) return;
+
+        const curTime = utils.getCurrentTime();
+        const index = users.indexOf(client);
+        users.splice(index, 1);
+        
+        console.log(chalk.yellow(`현재 인원 : ${utils.getCurrentUserCount(users)}명`));
+        console.log(chalk.blue(`[${curTime}] ${client.name}님이 퇴장했어요.`));
+        for(let user of users) user.write(JSON.stringify({status: 150, body:`${client.name}`}));
     });
 });
 
@@ -89,39 +90,38 @@ server.listen(setting.PORT, '0.0.0.0', ()=>{
     console.log(chalk.blue(`[${utils.getCurrentTime(users)}] Port ${setting.PORT}에서 서버가 열렸습니다.\n`));
 
     rl.on('line', (line)=>{
-        if(line !== ''){
-            if(line.startsWith('/')){
-                if(line === '/users'){
-                    console.log(chalk.yellow(`현재 인원 : ${utils.getCurrentUserCount(users)}명`));
-                    if(users.length !== 0) console.log(chalk.blue(utils.getCurrentUserList(users)));
-                }
-                else if(line.startsWith('/w ')){
-                    const cmd = line.split(' ');
-                    const toUser = cmd[1];
+        if(line === '') return;
 
-                    if(toUser !== ''){
-                        let check = false;
+        if(line.startsWith('/')){
+            if(line === '/users'){
+                console.log(chalk.yellow(`현재 인원 : ${utils.getCurrentUserCount(users)}명`));
+                if(users.length !== 0) console.log(chalk.blue(utils.getCurrentUserList(users)));
+            }
+            else if(line.startsWith('/w ')){
+                const cmd = line.split(' ');
+                const toUser = cmd[1];
 
-                        for(let user of users){
-                            if(user.name === toUser){
-                                check = true;
-                                try{
-                                    const text = cmd.slice(2).join(' ');
-                                    if(text === '') throw '';
+                if(toUser === '') return;
+                
+                let check = false;
+                for(let user of users){
+                    if(user.name === toUser){
+                        check = true;
+                        try{
+                            const text = cmd.slice(2).join(' ');
+                            if(text === '') throw '';
 
-                                    console.log(chalk.magenta('DM 전송에 성공했습니다.'));
-                                    user.write(JSON.stringify({status: 225, body: `${text}`}));
-                                }catch(e){}
-                                break;
-                            }
-                        }
-                        
-                        if(!check) console.log(chalk.red('해당 유저가 없습니다.'));
+                            console.log(chalk.magenta('DM 전송에 성공했습니다.'));
+                            user.write(JSON.stringify({status: 225, body: `${text}`}));
+                        }catch(e){}
+                        break;
                     }
                 }
+                
+                if(!check) console.log(chalk.red('해당 유저가 없습니다.'));
             }
-            else for(let user of users) user.write(JSON.stringify({status: 250, body: `[Notice] ${line}`}));
         }
+        else for(let user of users) user.write(JSON.stringify({status: 250, body: `[Notice] ${line}`}));
     });
 
     server.on('error', (err)=>{
