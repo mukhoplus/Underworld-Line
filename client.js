@@ -18,29 +18,25 @@ const client = net.connect({port: setting.PORT, host: setting.HOST}, ()=>{
 
     rl.on('line', (line)=>{
         if(line === '') return;
-
-        if(login){
-            if(line.startsWith('/')){
-                if(line === '/users') client.write(JSON.stringify({status: 210, body: `${line}`}));
-                else if(line.startsWith('/w ')){
-                    const cmd = line.split(' ');
-                    const toUser = cmd[1];
-
-                    if(toUser === '') return;
-                    try{
-                        const text = cmd.slice(2).join(' ');
-                        if(text === '') throw '';
-                        
-                        client.write(JSON.stringify({status: 220, to: `${toUser}`, body: `${text}`}));
-                    }catch(e){}
-                }
-            }
-            else client.write(JSON.stringify({status: 200, body: `${ID} : ${line}`}));
-        }
-        else{
+        if(!login){
             ID = line;
             client.write(JSON.stringify({status: 100, body: `${line}`}));
+            return;
         }
+
+        if(line.startsWith('/')){
+            if(line === '/users') client.write(JSON.stringify({status: 210, body: `${line}`}));
+            else if(line.startsWith('/w ')){
+                const cmd = line.split(' ');
+                const toUser = cmd[1];
+                if(toUser === '') return;
+
+                const text = cmd.slice(2).join(' ');
+                if(text === '') return;
+                client.write(JSON.stringify({status: 220, to: `${toUser}`, body: `${text}`}));
+            }
+        }
+        else client.write(JSON.stringify({status: 200, body: `${ID} : ${line}`}));
     });
 
     client.on('data', (data)=>{

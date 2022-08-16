@@ -1,9 +1,9 @@
 # Underworld-Line
 
 버그없는 익명 채팅 프로그램을 목표로 합니다.
-Version : 1.3.1
+Version : 1.3.2
 
-## 사용법
+## 사용법ㄴ
 
 0. utils.js에서 HOST와 PORT를 설정합니다.(변경 사항이 있는 경우)
 1. 개발 환경 설정: ``npm install``

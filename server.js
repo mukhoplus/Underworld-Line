@@ -17,57 +17,53 @@ const server = net.createServer((client)=>{
     client.on('data', (data)=>{
         let d = JSON.parse(data);
         const curTime = utils.getCurrentTime();
-        
+        const curUsers = utils.getCurrentUserList(users);
+
         switch(d.status){
             case 100:
-                let dup = false;
-                for(let user of users){
-                    if(user.name === d.body){
-                        dup = true;
-                        break;
-                    }
+                if(curUsers.includes(d.body)){
+                    client.write(JSON.stringify({status: 110, body: '중복된 아이디입니다. 다시 시도하세요.'}));
+                    return;
+                }
+                if(String(d.body).startsWith('/') || String(d.body).includes(' ')){
+                    client.write(JSON.stringify({status: 111, body: '사용할 수 없는 아이디입니다. 다시 시도하세요.'}));
+                    return;
                 }
                 
-                if(dup) client.write(JSON.stringify({status: 110, body:'중복된 아이디입니다. 다시 시도하세요.'}));
-                else if(String(d.body).startsWith('/') || String(d.body).includes(' ')) client.write(JSON.stringify({status: 111, body:'사용할 수 없는 아이디입니다. 다시 시도하세요.'}));
-                else{
-                    client.name = d.body;
-                    users.push(client);
-                    console.log(chalk.yellow(`현재 인원 : ${utils.getCurrentUserCount(users)}명`));
-                    console.log(chalk.blue(`[${curTime}] ${d.body}님이 접속했어요.(IP 주소 : ${client.remoteAddress})`));
-                    for(let user of users) user.write(JSON.stringify({status: 101, body:`${d.body}님이 들어왔습니다.`}));
-                }
+                client.name = d.body;
+                users.push(client);
+                console.log(chalk.yellow(`현재 인원 : ${utils.getCurrentUserCount(users)}명`));
+                console.log(chalk.blue(`[${curTime}] ${client.name}님이 접속했어요.(IP 주소 : ${client.remoteAddress})`));
+                for(let user of users) user.write(JSON.stringify({status: 101, body: `${client.name}님이 들어왔습니다.`}));
             break;
             case 200:
                 console.log(chalk.green(`[${curTime}] ${d.body}`));
                 for(let user of users){
-                    if(client.name === user.name) continue;
-                    user.write(JSON.stringify({status: 201, body:`${d.body}`}));
+                    if(client.name === user.name) continue; // 본인에게는 전송하지 않음
+                    user.write(JSON.stringify({status: 201, body: `${d.body}`}));
                 }
             break;
             case 210:
                 const result = utils.getUsers(users);
-                client.write(JSON.stringify({status: 211, body:`${result}`}));
+                client.write(JSON.stringify({status: 211, body: `${result}`}));
             break;
             case 220:
-                let check = false;
-
-                for(let user of users){
-                    if(user.name === d.to){ // 해당 유저가 있으면 dm 전송
-                        check = true;
-                        if(client.name === user.name){ // 단, 본인에게는 전송하지 못함.
-                            user.write(JSON.stringify({status: 222, body:'본인에게는 DM을 보낼 수 없습니다.'}));
-                            break;
-                        }
-                        
-                        user.write(JSON.stringify({status: 221, body:`DM) ${client.name} : ${d.body}`})); // 메세지 전송
-                        console.log(chalk.magenta(`[${curTime}] ${client.name} 유저가 ${user.name} 유저에게 DM을 보냈어요 -> ${d.body}`));
-                        client.write(JSON.stringify({status: 221, body:'DM 전송에 성공했습니다.'})); // 성공 알림
-                        break;
-                    }
+                const index = curUsers.indexOf(d.to);
+                if(index === -1){
+                    client.write(JSON.stringify({status: 222, body: '전송할 ID가 없습니다.'})); // 실패 알림
+                    return;
                 }
 
-                if(!check) client.write(JSON.stringify({status: 222, body:'전송할 ID가 없습니다.'})); // 실패 알림
+                // 해당 유저가 있으면 dm 전송
+                const selectedUser = users[index];
+                if(client.name === selectedUser.name){ // 단, 본인에게는 전송하지 못함.
+                    selectedUser.write(JSON.stringify({status: 222, body: '본인에게는 DM을 보낼 수 없습니다.'}));
+                    break;
+                }
+                
+                selectedUser.write(JSON.stringify({status: 221, body: `DM) ${client.name} : ${d.body}`})); // 메세지 전송
+                console.log(chalk.magenta(`[${curTime}] ${client.name} 유저가 ${selectedUser.name} 유저에게 DM을 보냈어요 -> ${d.body}`));
+                client.write(JSON.stringify({status: 221, body: 'DM 전송에 성공했습니다.'})); // 성공 알림
             break;
         }
     });
@@ -81,7 +77,7 @@ const server = net.createServer((client)=>{
         
         console.log(chalk.yellow(`현재 인원 : ${utils.getCurrentUserCount(users)}명`));
         console.log(chalk.blue(`[${curTime}] ${client.name}님이 퇴장했어요.`));
-        for(let user of users) user.write(JSON.stringify({status: 150, body:`${client.name}`}));
+        for(let user of users) user.write(JSON.stringify({status: 150, body: `${client.name}`}));
     });
 });
 
@@ -99,26 +95,23 @@ server.listen(setting.PORT, '0.0.0.0', ()=>{
             }
             else if(line.startsWith('/w ')){
                 const cmd = line.split(' ');
-                const toUser = cmd[1];
 
+                const toUser = cmd[1];
                 if(toUser === '') return;
                 
-                let check = false;
-                for(let user of users){
-                    if(user.name === toUser){
-                        check = true;
-                        try{
-                            const text = cmd.slice(2).join(' ');
-                            if(text === '') throw '';
+                const text = cmd.slice(2).join(' ');
+                if(text === '') return;
 
-                            console.log(chalk.magenta('DM 전송에 성공했습니다.'));
-                            user.write(JSON.stringify({status: 225, body: `${text}`}));
-                        }catch(e){}
-                        break;
-                    }
+                const curUsers = utils.getCurrentUserList(users);
+                const index = curUsers.indexOf(toUser);
+                if(index === -1){
+                    console.log(chalk.red('해당 유저가 없습니다.'));
+                    return;
                 }
-                
-                if(!check) console.log(chalk.red('해당 유저가 없습니다.'));
+
+                const selectedUser = users[index];
+                selectedUser.write(JSON.stringify({status: 225, body: `${text}`}));
+                console.log(chalk.magenta('DM 전송에 성공했습니다.'));
             }
         }
         else for(let user of users) user.write(JSON.stringify({status: 250, body: `[Notice] ${line}`}));
