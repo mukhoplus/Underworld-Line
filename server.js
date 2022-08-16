@@ -67,7 +67,7 @@ const server = net.createServer((client)=>{
                     client.name = d.body;
                     users.push(client);
                     console.log(chalk.yellow(`현재 인원 : ${getCurrentUserCount()}명`));
-                    console.log(chalk.blue(`[${curTime}] ${d.body}님이 접속했어요.(IP 주소 : ${client.localAddress})`));
+                    console.log(chalk.blue(`[${curTime}] ${d.body}님이 접속했어요.(IP 주소 : ${client.remoteAddress})`));
                     for(let user of users) user.write(JSON.stringify({status: 101, body:`${d.body}님이 들어왔습니다.`}));
                 }
             break;

@@ -37,6 +37,7 @@ const client = net.connect({port: PORT, host: HOST}, ()=>{
                                     text += tempText[i];
                                     if(i !== tempText.length-1) text += ' ';
                                 }
+
                                 client.write(JSON.stringify({status: 220, to: `${toUser}`, body: `${text}`}));
                             }catch(e){
                                 
