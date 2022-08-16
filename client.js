@@ -32,12 +32,7 @@ const client = net.connect({port: PORT, host: HOST}, ()=>{
                                 const tempText = cmd.slice(2);
                                 if(tempText.length === 0 || (tempText.length === 1 && tempText[0] === '')) throw '';
                                 
-                                let text = '';
-                                for(let i=0; i<tempText.length; i++){
-                                    text += tempText[i];
-                                    if(i !== tempText.length-1) text += ' ';
-                                }
-
+                                const text = tempText.join(' ');
                                 client.write(JSON.stringify({status: 220, to: `${toUser}`, body: `${text}`}));
                             }catch(e){
                                 

@@ -142,11 +142,8 @@ server.listen(PORT, '0.0.0.0', ()=>{
                                     const tempText = cmd.slice(2);
                                     if(tempText.length === 0 || (tempText.length === 1 && tempText[0] === '')) throw '';
                                     
-                                    let text = '';
-                                    for(let i=0; i<tempText.length; i++){
-                                        text += tempText[i];
-                                        if(i !== tempText.length-1) text += ' ';
-                                    }
+                                    const text = tempText.join(' ');
+                                    console.log(chalk.magenta('DM 전송에 성공했습니다.'));
                                     user.write(JSON.stringify({status: 225, body: `${text}`}));
                                 }catch(e){
                                     
