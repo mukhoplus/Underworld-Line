@@ -1,3 +1,5 @@
+import chalk from 'chalk';
+
 export default class utils{
     static getCurrentTime(){
         const today = new Date();
@@ -27,7 +29,7 @@ export default class utils{
     }
     
     static getUsers(users){
-        const result = chalk.yellow(`현재 인원 : ${getCurrentUserCount(users)}명`) + '\n' + chalk.blue(getCurrentUserList(users));
+        const result = chalk.yellow(`현재 인원 : ${this.getCurrentUserCount(users)}명`) + '\n' + chalk.blue(this.getCurrentUserList(users));
         return result;   
     }
 }
