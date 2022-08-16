@@ -50,7 +50,7 @@ const server = net.createServer((client)=>{
             case 220:
                 const index = curUsers.indexOf(d.to);
                 if(index === -1){
-                    client.write(JSON.stringify({status: 222, body: '전송할 ID가 없습니다.'})); // 실패 알림
+                    client.write(JSON.stringify({status: 222, body: '전송할 ID가 없습니다.'}));
                     return;
                 }
 
@@ -61,9 +61,9 @@ const server = net.createServer((client)=>{
                     break;
                 }
                 
-                selectedUser.write(JSON.stringify({status: 221, body: `DM) ${client.name} : ${d.body}`})); // 메세지 전송
+                selectedUser.write(JSON.stringify({status: 221, body: `DM) ${client.name} : ${d.body}`}));
                 console.log(chalk.magenta(`[${curTime}] ${client.name} 유저가 ${selectedUser.name} 유저에게 DM을 보냈어요 -> ${d.body}`));
-                client.write(JSON.stringify({status: 221, body: 'DM 전송에 성공했습니다.'})); // 성공 알림
+                client.write(JSON.stringify({status: 221, body: 'DM 전송에 성공했습니다.'}));
             break;
         }
     });
