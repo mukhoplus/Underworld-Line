@@ -95,7 +95,7 @@ server.listen(setting.PORT, '0.0.0.0', ()=>{
             }
             else if(line.startsWith('/w ')){
                 const cmd = line.split(' ');
-
+                
                 const toUser = cmd[1];
                 if(toUser === '') return;
                 

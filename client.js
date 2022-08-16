@@ -28,6 +28,7 @@ const client = net.connect({port: setting.PORT, host: setting.HOST}, ()=>{
             if(line === '/users') client.write(JSON.stringify({status: 210, body: `${line}`}));
             else if(line.startsWith('/w ')){
                 const cmd = line.split(' ');
+                
                 const toUser = cmd[1];
                 if(toUser === '') return;
 
