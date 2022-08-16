@@ -2,8 +2,7 @@ import net from 'net';
 import chalk from 'chalk';
 import readline from 'readline';
 import utils from './utils.js';
-
-const PORT = 2022;
+import setting from './setting.js';
 
 const rl = readline.createInterface({
     input: process.stdin,
@@ -85,9 +84,9 @@ const server = net.createServer((client)=>{
     });
 });
 
-server.listen(PORT, '0.0.0.0', ()=>{
+server.listen(setting.PORT, '0.0.0.0', ()=>{
     console.clear();
-    console.log(chalk.blue(`[${utils.getCurrentTime(users)}] Port ${PORT}에서 서버가 열렸습니다.\n`));
+    console.log(chalk.blue(`[${utils.getCurrentTime(users)}] Port ${setting.PORT}에서 서버가 열렸습니다.\n`));
 
     rl.on('line', (line)=>{
         if(line !== ''){

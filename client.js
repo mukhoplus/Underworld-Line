@@ -1,9 +1,7 @@
 import net from 'net';
 import chalk from 'chalk';
 import readline from 'readline';
-
-const PORT = 2022;
-const HOST = '127.0.0.1';
+import setting from './setting.js';
 
 const rl = readline.createInterface({
     input: process.stdin,
@@ -12,7 +10,7 @@ const rl = readline.createInterface({
 
 let login = false;
 let ID = '';
-const client = net.connect({port: PORT, host: HOST}, ()=>{
+const client = net.connect({port: setting.PORT, host: setting.HOST}, ()=>{
     client.setEncoding('utf8');
     
     console.clear();
