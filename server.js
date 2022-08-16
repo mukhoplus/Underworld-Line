@@ -1,6 +1,7 @@
 import net from 'net';
 import chalk from 'chalk';
 import readline from 'readline';
+import utils from './utils.js';
 
 const PORT = 2022;
 
@@ -9,39 +10,6 @@ const rl = readline.createInterface({
     output: process.stdout
 });
 
-function getCurrentTime(){
-    const today = new Date();
-
-    let year = today.getFullYear();
-    let month = today.getMonth() + 1;
-    month = month >= 10 ? month : '0' + month; 
-    let day = today.getDate();
-    day = day >= 10 ? day : '0' + day;
-    let hour = today.getHours();
-    hour = hour >= 10 ? hour : '0' + hour;
-    let minute = today.getMinutes();
-    minute = minute >= 10 ? minute : '0' + minute;
-    let second = today.getSeconds();
-    second = second >= 10 ? second : '0' + second;
-
-    return `${year}-${month}-${day} ${hour}:${minute}:${second}`;
-}
-
-function getCurrentUserCount(){
-    return users.length;
-}
-
-function getCurrentUserList(){
-    let result = [];
-    for(let user of users) result.push(user.name);
-    return result;
-}
-
-function getUsers(){
-    const result = chalk.yellow(`현재 인원 : ${getCurrentUserCount()}명`) + '\n' + chalk.blue(getCurrentUserList());
-    return result;   
-}
-
 let users = [];
 
 const server = net.createServer((client)=>{
@@ -49,7 +17,7 @@ const server = net.createServer((client)=>{
 
     client.on('data', (data)=>{
         let d = JSON.parse(data);
-        const curTime = getCurrentTime();
+        const curTime = utils.getCurrentTime();
         
         switch(d.status){
             case 100:
@@ -66,7 +34,7 @@ const server = net.createServer((client)=>{
                 else{
                     client.name = d.body;
                     users.push(client);
-                    console.log(chalk.yellow(`현재 인원 : ${getCurrentUserCount()}명`));
+                    console.log(chalk.yellow(`현재 인원 : ${utils.getCurrentUserCount(users)}명`));
                     console.log(chalk.blue(`[${curTime}] ${d.body}님이 접속했어요.(IP 주소 : ${client.remoteAddress})`));
                     for(let user of users) user.write(JSON.stringify({status: 101, body:`${d.body}님이 들어왔습니다.`}));
                 }
@@ -79,7 +47,7 @@ const server = net.createServer((client)=>{
                 }
             break;
             case 210:
-                const result = getUsers();
+                const result = utils.getUsers(users);
                 client.write(JSON.stringify({status: 211, body:`${result}`}));
             break;
             case 220:
@@ -106,11 +74,11 @@ const server = net.createServer((client)=>{
 
     client.on('close', ()=>{
         if(client.name !== undefined){
-            const curTime = getCurrentTime();
+            const curTime = utils.getCurrentTime();
             const index = users.indexOf(client);
             users.splice(index, 1);
             
-            console.log(chalk.yellow(`현재 인원 : ${getCurrentUserCount()}명`));
+            console.log(chalk.yellow(`현재 인원 : ${utils.getCurrentUserCount(users)}명`));
             console.log(chalk.blue(`[${curTime}] ${client.name}님이 퇴장했어요.`));
             for(let user of users) user.write(JSON.stringify({status: 150, body:`${client.name}`}));
         }
@@ -119,14 +87,14 @@ const server = net.createServer((client)=>{
 
 server.listen(PORT, '0.0.0.0', ()=>{
     console.clear();
-    console.log(chalk.blue(`[${getCurrentTime()}] Port ${PORT}에서 서버가 열렸습니다.\n`));
+    console.log(chalk.blue(`[${utils.getCurrentTime(users)}] Port ${PORT}에서 서버가 열렸습니다.\n`));
 
     rl.on('line', (line)=>{
         if(line !== ''){
             if(line.startsWith('/')){
                 if(line === '/users'){
-                    console.log(chalk.yellow(`현재 인원 : ${getCurrentUserCount()}명`));
-                    if(users.length !== 0) console.log(chalk.blue(getCurrentUserList()));
+                    console.log(chalk.yellow(`현재 인원 : ${utils.getCurrentUserCount(users)}명`));
+                    if(users.length !== 0) console.log(chalk.blue(utils.getCurrentUserList(users)));
                 }
                 else if(line.startsWith('/w ')){
                     const cmd = line.split(' ');
@@ -158,10 +126,10 @@ server.listen(PORT, '0.0.0.0', ()=>{
     });
 
     server.on('error', (err)=>{
-        console.log(chalk.red(`[${getCurrentTime()}] 서버에 오류가 발생했습니다.`));
+        console.log(chalk.red(`[${utils.getCurrentTime()}] 서버에 오류가 발생했습니다.`));
     });
 
     server.on('close', ()=>{
-        console.log(chalk.blue(`[${getCurrentTime()}] 서버를 닫습니다.`));
+        console.log(chalk.blue(`[${utils.getCurrentTime()}] 서버를 닫습니다.`));
     });
 });
