@@ -45,6 +45,7 @@
 ## 추후 업데이트 예정 목록
 
 1. IP 출력
+    - Local 환경에서 실험시 접속 IP가 localhost로 고정된다.
 
 ## Status Code
 
@@ -69,3 +70,5 @@
     - IP 밴은 아직 제한사항이 있으므로 닉네임 밴 도입(실효성이 있는가?)
 2. 클라이언트 명령어 기능
     - Client to Server whisper: 익명 채팅에 어울리지 않는 기능 같다.
+3. remoteAddress 출력 확인
+4. 귓속말 로직 정규표현식으로 교체
