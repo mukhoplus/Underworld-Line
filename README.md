@@ -1,12 +1,14 @@
 # Underworld-Line
 
 버그없는 익명 채팅 프로그램을 목표로 합니다.
+Version : 1.1.0
 
 ## 사용법
 
-1. npm install
-2. 서버: node server
-3. 클라이언트: node client
+0. utils.js에서 HOST와 PORT를 설정합니다.(변경 사항이 있는 경우)
+1. ``npm install``
+2. 서버: ``node server``
+3. 클라이언트: ``node client``
     - '/'로 시작하는 아이디는 만들 수 없습니다.
     - ' '이 포함되는 아이디는 만들 수 없습니다.
 4. 서버/채팅 종료: ``Control + C``
