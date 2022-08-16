@@ -1,7 +1,7 @@
 # Underworld-Line
 
 버그없는 익명 채팅 프로그램을 목표로 합니다.
-Version : 1.1.0
+Version : 1.3.0
 
 ## 사용법
 
