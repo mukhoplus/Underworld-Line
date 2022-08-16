@@ -29,14 +29,11 @@ const client = net.connect({port: PORT, host: HOST}, ()=>{
 
                         if(toUser !== ''){
                             try{
-                                const tempText = cmd.slice(2);
-                                if(tempText.length === 0 || (tempText.length === 1 && tempText[0] === '')) throw '';
+                                const text = cmd.slice(2).join(' ');
+                                if(text === '') throw '';
                                 
-                                const text = tempText.join(' ');
                                 client.write(JSON.stringify({status: 220, to: `${toUser}`, body: `${text}`}));
-                            }catch(e){
-                                
-                            }
+                            }catch(e){}
                         }
                     }
                 }

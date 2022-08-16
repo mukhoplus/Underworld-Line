@@ -139,18 +139,16 @@ server.listen(PORT, '0.0.0.0', ()=>{
                             if(user.name === toUser){
                                 check = true;
                                 try{
-                                    const tempText = cmd.slice(2);
-                                    if(tempText.length === 0 || (tempText.length === 1 && tempText[0] === '')) throw '';
-                                    
-                                    const text = tempText.join(' ');
+                                    const text = cmd.slice(2).join(' ');
+                                    if(text === '') throw '';
+
                                     console.log(chalk.magenta('DM 전송에 성공했습니다.'));
                                     user.write(JSON.stringify({status: 225, body: `${text}`}));
-                                }catch(e){
-                                    
-                                }
+                                }catch(e){}
                                 break;
                             }
                         }
+                        
                         if(!check) console.log(chalk.red('해당 유저가 없습니다.'));
                     }
                 }
