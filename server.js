@@ -30,11 +30,11 @@ const server = net.createServer((client)=>{
                     return;
                 }
                 
-                client.name = d.body;
+                client.name = d.body; // client: login = true
                 users.push(client);
                 console.log(chalk.yellow(`현재 인원 : ${utils.getCurrentUserCount(users)}명`));
                 console.log(chalk.blue(`[${curTime}] ${client.name}님이 접속했어요.(IP 주소 : ${client.remoteAddress})`));
-                for(let user of users) user.write(JSON.stringify({status: 101, body: `${client.name}님이 들어왔습니다.`}));
+                for(let user of users) user.write(JSON.stringify({status: 101, body: `${client.name}`}));
             break;
             case 200:
                 console.log(chalk.green(`[${curTime}] ${d.body}`));

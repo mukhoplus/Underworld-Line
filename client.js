@@ -8,8 +8,6 @@ const rl = readline.createInterface({
     output: process.stdout
 });
 
-let login = false;
-let ID = '';
 const client = net.connect({port: setting.PORT, host: setting.HOST}, ()=>{
     client.setEncoding('utf8');
     
@@ -18,8 +16,7 @@ const client = net.connect({port: setting.PORT, host: setting.HOST}, ()=>{
 
     rl.on('line', (line)=>{
         if(line === '') return;
-        if(!login){
-            ID = line;
+        if(!client.name){ // if(!login)
             client.write(JSON.stringify({status: 100, body: `${line}`}));
             return;
         }
@@ -37,7 +34,7 @@ const client = net.connect({port: setting.PORT, host: setting.HOST}, ()=>{
                 client.write(JSON.stringify({status: 220, to: `${toUser}`, body: `${text}`}));
             }
         }
-        else client.write(JSON.stringify({status: 200, body: `${ID} : ${line}`}));
+        else client.write(JSON.stringify({status: 200, body: `${client.name} : ${line}`}));
     });
 
     client.on('data', (data)=>{
@@ -45,8 +42,8 @@ const client = net.connect({port: setting.PORT, host: setting.HOST}, ()=>{
 
         switch(d.status){
             case 101:
-                login = true;
-                console.log(chalk.blue(`${d.body}`));
+                client.name = d.body; // login = true
+                console.log(chalk.blue(`${d.body}님이 들어왔습니다.`));
             break;
             case 110:
             case 111:
