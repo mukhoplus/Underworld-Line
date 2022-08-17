@@ -27,9 +27,15 @@ export default class utils{
         const result = users.map(user => user.name);
         return result;
     }
-    
-    static getUsers(users){
-        const result = chalk.yellow(`현재 인원 : ${this.getCurrentUserCount(users)}명`) + '\n' + chalk.blue(this.getCurrentUserList(users));
-        return result;   
+
+    static getCount(users){
+        const result = chalk.yellow(`현재 인원 : ${this.getCurrentUserCount(users)}명`);
+        return result; 
+    }
+
+    static commandUsers(users){
+        let result = this.getCount(users);
+        if(users.length !== 0) result += '\n' + chalk.blue(this.getCurrentUserList(users));
+        return result;
     }
 }

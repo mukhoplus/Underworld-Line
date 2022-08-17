@@ -42,7 +42,7 @@ const client = net.connect({port: setting.PORT, host: setting.HOST}, ()=>{
 
         switch(d.status){
             case 101:
-                client.name = d.body; // login = true
+                client.name = d.body; // login = true, 서버의 client와 동기화
                 console.log(chalk.blue(`${d.body}님이 들어왔습니다.`));
             break;
             case 110:
@@ -70,6 +70,13 @@ const client = net.connect({port: setting.PORT, host: setting.HOST}, ()=>{
             break;
             case 250:
                 console.log(chalk.yellow(d.body));
+            break;
+            case 300:
+                console.log(chalk.red(d.body));
+                process.exit();
+            break;
+            case 310:
+                console.log(chalk.blue(d.body));
             break;
         }
     });

@@ -32,7 +32,7 @@ const server = net.createServer((client)=>{
                 
                 client.name = d.body; // client: login = true
                 users.push(client);
-                console.log(chalk.yellow(`현재 인원 : ${utils.getCurrentUserCount(users)}명`));
+                console.log(utils.getCount(users));
                 console.log(chalk.blue(`[${curTime}] ${client.name}님이 접속했어요.(IP 주소 : ${client.remoteAddress})`));
                 for(let user of users) user.write(JSON.stringify({status: 101, body: `${client.name}`}));
             break;
@@ -44,7 +44,7 @@ const server = net.createServer((client)=>{
                 }
             break;
             case 210:
-                const result = utils.getUsers(users);
+                const result = utils.commandUsers(users);
                 client.write(JSON.stringify({status: 211, body: `${result}`}));
             break;
             case 220:
@@ -75,7 +75,7 @@ const server = net.createServer((client)=>{
         const index = users.indexOf(client);
         users.splice(index, 1);
         
-        console.log(chalk.yellow(`현재 인원 : ${utils.getCurrentUserCount(users)}명`));
+        console.log(utils.getCount(users));
         console.log(chalk.blue(`[${curTime}] ${client.name}님이 퇴장했어요.`));
         for(let user of users) user.write(JSON.stringify({status: 150, body: `${client.name}`}));
     });
@@ -90,8 +90,7 @@ server.listen(setting.PORT, '0.0.0.0', ()=>{
 
         if(line.startsWith('/')){
             if(line === '/users'){
-                console.log(chalk.yellow(`현재 인원 : ${utils.getCurrentUserCount(users)}명`));
-                if(users.length !== 0) console.log(chalk.blue(utils.getCurrentUserList(users)));
+                console.log(utils.commandUsers(users));
             }
             else if(line.startsWith('/w ')){
                 const cmd = line.split(' ');
@@ -105,20 +104,45 @@ server.listen(setting.PORT, '0.0.0.0', ()=>{
                 const curUsers = utils.getCurrentUserList(users);
                 const index = curUsers.indexOf(toUser);
                 if(index === -1){
-                    console.log(chalk.red('해당 유저가 없습니다.'));
+                    console.log(chalk.red('해당 유저가 없어요.'));
                     return;
                 }
 
                 const selectedUser = users[index];
                 selectedUser.write(JSON.stringify({status: 225, body: `${text}`}));
-                console.log(chalk.magenta('DM 전송에 성공했습니다.'));
+                console.log(chalk.magenta('DM 전송에 성공했어요.'));
+            }
+            else if(line.startsWith('/kick ')){
+                const cmd = line.split(' ');
+                
+                const kickUser = cmd[1];
+                if(kickUser === '') return;
+
+                const curUsers = utils.getCurrentUserList(users);
+                const index = curUsers.indexOf(kickUser);
+                if(index === -1){
+                    console.log(chalk.red('해당 유저가 없어요.'));
+                    return;
+                }
+
+                for(let user of users){
+                    let status, text;
+                    user.name === kickUser ? (status = 300, text = '당신은 강퇴당했습니다.') : (status = 310, text = `${kickUser} 유저가 강퇴당했습니다.`);
+                    user.write(JSON.stringify({status: status, body: `${text}`}));
+                }
+                
+                const curTime = utils.getCurrentTime();
+                users.splice(index, 1);
+
+                console.log(utils.getCount(users));
+                console.log(chalk.blue(`[${curTime}] ${kickUser}님을 강퇴했어요.`));
             }
         }
         else for(let user of users) user.write(JSON.stringify({status: 250, body: `[Notice] ${line}`}));
     });
 
     server.on('error', (err)=>{
-        console.log(chalk.red(`[${utils.getCurrentTime()}] 서버에 오류가 발생했습니다.`));
+        console.log(chalk.red(`[${utils.getCurrentTime()}] 서버에 오류가 발생했어요.`));
     });
 
     server.on('close', ()=>{
