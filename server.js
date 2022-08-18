@@ -20,7 +20,7 @@ const server = net.createServer((client)=>{
         const curUsers = utils.getCurrentUserList(users);
 
         switch(d.status){
-            case 100:
+            case 100: // 로그인 요청 
                 if(curUsers.includes(d.body)){
                     client.write(JSON.stringify({status: 110, body: '중복된 아이디입니다. 다시 시도하세요.'}));
                     return;
@@ -34,20 +34,23 @@ const server = net.createServer((client)=>{
                 users.push(client);
                 console.log(utils.getCount(users));
                 console.log(chalk.blue(`[${curTime}] ${client.name}님이 접속했어요.(IP 주소 : ${client.remoteAddress})`));
-                for(let user of users) user.write(JSON.stringify({status: 101, body: `${client.name}`}));
+                for(let user of users){
+                    let status = user.name === client.name ? 101 : 102;
+                    user.write(JSON.stringify({status: status, body: `${client.name}`}));
+                }
             break;
-            case 200:
+            case 200: // 채팅 전송 요청
                 console.log(chalk.green(`[${curTime}] ${d.body}`));
                 for(let user of users){
                     if(client.name === user.name) continue; // 본인에게는 전송하지 않음
                     user.write(JSON.stringify({status: 201, body: `${d.body}`}));
                 }
             break;
-            case 210:
+            case 210: // 명령어 전송 요청
                 const result = utils.commandUsers(users);
                 client.write(JSON.stringify({status: 211, body: `${result}`}));
             break;
-            case 220:
+            case 220: // 귓속말 전송 요청
                 const index = curUsers.indexOf(d.to);
                 if(index === -1){
                     client.write(JSON.stringify({status: 222, body: '전송할 ID가 없습니다.'}));
@@ -76,6 +79,11 @@ const server = net.createServer((client)=>{
         users.splice(index, 1);
         
         console.log(utils.getCount(users));
+        if(client.kick){ // 강퇴
+            console.log(chalk.blue(`[${curTime}] ${client.name}님을 강퇴했어요.`));
+            return;
+        }
+        // 일반적인 종료 상황
         console.log(chalk.blue(`[${curTime}] ${client.name}님이 퇴장했어요.`));
         for(let user of users) user.write(JSON.stringify({status: 150, body: `${client.name}`}));
     });
@@ -119,23 +127,18 @@ server.listen(setting.PORT, '0.0.0.0', ()=>{
                 if(kickUser === '') return;
 
                 const curUsers = utils.getCurrentUserList(users);
-                const index = curUsers.indexOf(kickUser);
-                if(index === -1){
+                if(curUsers.indexOf(kickUser) === -1){
                     console.log(chalk.red('해당 유저가 없어요.'));
                     return;
                 }
 
                 for(let user of users){
                     let status, text;
-                    user.name === kickUser ? (status = 300, text = '당신은 강퇴당했습니다.') : (status = 310, text = `${kickUser} 유저가 강퇴당했습니다.`);
+                    // user.kick : kick을 하게 되면 client에서 process.exit()을 하게 되는데, 이때 server에서 close 이벤트를 발생시킴.
+                    // 삭제를 2번(해당 함수 + close 이벤트) 하게 되면 삭제 동작이 2번 실행되면서 의도치 않은 동작을 하기 때문에 해당 이벤트의 중복 실행을 막기 위함.
+                    user.name === kickUser ? (user.kick = true, status = 300, text = '당신은 강퇴당했습니다.') : (status = 310, text = `${kickUser}님이 강퇴당했습니다.`);
                     user.write(JSON.stringify({status: status, body: `${text}`}));
                 }
-                
-                const curTime = utils.getCurrentTime();
-                users.splice(index, 1);
-
-                console.log(utils.getCount(users));
-                console.log(chalk.blue(`[${curTime}] ${kickUser}님을 강퇴했어요.`));
             }
         }
         else for(let user of users) user.write(JSON.stringify({status: 250, body: `[Notice] ${line}`}));

@@ -17,6 +17,7 @@ const client = net.connect({port: setting.PORT, host: setting.HOST}, ()=>{
     rl.on('line', (line)=>{
         if(line === '') return;
         if(!client.name){ // if(!login)
+            client.name = line;
             client.write(JSON.stringify({status: 100, body: `${line}`}));
             return;
         }
@@ -41,41 +42,42 @@ const client = net.connect({port: setting.PORT, host: setting.HOST}, ()=>{
         let d = JSON.parse(data);
 
         switch(d.status){
-            case 101:
-                client.name = d.body; // login = true, 서버의 client와 동기화
+            case 101: // 로그인 승인
+                client.name = d.body;
+            case 102: // 로그인 알림
                 console.log(chalk.blue(`${d.body}님이 들어왔습니다.`));
             break;
-            case 110:
-            case 111:
+            case 110: // 로그인-아이디 중복
+            case 111: // 로그인-사용할 수 없는 문자 사용
                 console.log(chalk.red(`${d.body}`));
                 process.stdout.write(chalk.blue(`아이디를 입력하세요: `));
             break;
-            case 150:
+            case 150: // 로그아웃
                 console.log(chalk.blue(`${d.body}님이 퇴장했습니다.`));
             break;
-            case 201:
+            case 201: // 채팅 전송
                 console.log(chalk.green(d.body));
             break;
-            case 211:
+            case 211: // 명령어 전송 승인
                 console.log(d.body);
             break;
-            case 221:
+            case 221: // 귓속말 전송 승인
                 console.log(chalk.magenta(d.body));
             break;
-            case 222:
+            case 222: // 귓속말 전송 거부
                 console.log(chalk.red(d.body));
             break;
-            case 225:
+            case 225: // 서버 귓속말 전송
                 console.log(chalk.yellow(`To Server : ${d.body}`));
             break;
-            case 250:
+            case 250: // 공지 전송
                 console.log(chalk.yellow(d.body));
             break;
-            case 300:
+            case 300: // 유저 강퇴
                 console.log(chalk.red(d.body));
                 process.exit();
             break;
-            case 310:
+            case 310: // 유저 강퇴 알림
                 console.log(chalk.blue(d.body));
             break;
         }
