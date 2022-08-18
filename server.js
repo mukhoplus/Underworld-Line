@@ -59,7 +59,7 @@ const server = net.createServer((client)=>{
                 const selectedUser = users[index];
                 if(client.name === selectedUser.name){ // 단, 본인에게는 전송하지 못함.
                     selectedUser.write(JSON.stringify({status: 222, body: '본인에게는 DM을 보낼 수 없습니다.'}));
-                    break;
+                    return;
                 }
                 
                 selectedUser.write(JSON.stringify({status: 221, body: `DM) ${client.name} : ${d.body}`}));
