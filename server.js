@@ -31,14 +31,11 @@ const server = net.createServer((client)=>{
                 }
                 
                 client.name = d.body; // client: login = true
-                
+
                 users.push(client);
                 console.log(utils.getCount(users));
                 console.log(chalk.blue(`[${curTime}] ${client.name}님이 접속했어요.(IP 주소 : ${client.remoteAddress})`));
-                for(let user of users){
-                    let status = user.name === client.name ? 101 : 102;
-                    user.write(JSON.stringify({status: status, body: `${client.name}`}));
-                }
+                for(let user of users) user.write(JSON.stringify({status: 101, body: `${client.name}`}));
             break;
             case 200: // 채팅 전송 요청
                 console.log(chalk.green(`[${curTime}] ${d.body}`));
