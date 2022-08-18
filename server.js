@@ -31,6 +31,7 @@ const server = net.createServer((client)=>{
                 }
                 
                 client.name = d.body; // client: login = true
+                
                 users.push(client);
                 console.log(utils.getCount(users));
                 console.log(chalk.blue(`[${curTime}] ${client.name}님이 접속했어요.(IP 주소 : ${client.remoteAddress})`));

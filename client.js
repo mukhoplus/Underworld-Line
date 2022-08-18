@@ -43,8 +43,6 @@ const client = net.connect({port: setting.PORT, host: setting.HOST}, ()=>{
 
         switch(d.status){
             case 101: // 로그인 승인
-                client.name = d.body;
-            case 102: // 로그인 알림
                 console.log(chalk.blue(`${d.body}님이 들어왔습니다.`));
             break;
             case 110: // 로그인-아이디 중복
