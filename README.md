@@ -75,10 +75,7 @@ Version : 1.4.2
 ## 검토 중인 사항
 
 1. 서버 관리자 기능
-    - IP 밴은 아직 제한사항이 있으므로 닉네임 밴 도입(실효성이 있는가?)
-2. 클라이언트 명령어 기능
-    - Client to Server whisper: 익명 채팅에 어울리지 않는 기능 같다.
-3. remoteAddress 출력 확인
-4. 귓속말 로직 정규표현식으로 교체
-5. 모든 기능이 검증될 경우 log 정보 저장 및 Database로 회원가입 도입
-6. 해결: [윈도우에서 안됨](https://velog.io/@whoyoung90/TIL-25-WECODE-React-LUSH-Cloning-npm-install%EC%98%A4%EB%A5%98-%ED%95%B4%EA%B2%B0)
+    - IP 밴
+3. 귓속말 로직 정규표현식으로 교체
+4. 모든 기능이 검증될 경우 log 정보 저장 및 Database로 회원가입 도입
+5. 해결: [윈도우에서 안됨](https://velog.io/@whoyoung90/TIL-25-WECODE-React-LUSH-Cloning-npm-install%EC%98%A4%EB%A5%98-%ED%95%B4%EA%B2%B0)
