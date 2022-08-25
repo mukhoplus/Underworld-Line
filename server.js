@@ -26,7 +26,7 @@ const server = net.createServer((client)=>{
                     return;
                 }
 
-                if(d.body !== d.body.replace(/[\s|\/]/g, '')){
+                if(/[\s|\/]/.test(d.body)){
                     client.write(JSON.stringify({status: 111, body: '사용할 수 없는 아이디입니다. 다시 시도하세요.'}));
                     return;
                 }
