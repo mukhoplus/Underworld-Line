@@ -81,3 +81,4 @@ Version : 1.4.2
 3. remoteAddress 출력 확인
 4. 귓속말 로직 정규표현식으로 교체
 5. 모든 기능이 검증될 경우 log 정보 저장 및 Database로 회원가입 도입
+6. 해결 중: [윈도우에서 안됨](https://velog.io/@whoyoung90/TIL-25-WECODE-React-LUSH-Cloning-npm-install%EC%98%A4%EB%A5%98-%ED%95%B4%EA%B2%B0)
