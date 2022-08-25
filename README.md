@@ -51,7 +51,7 @@ Version : 1.4.2
 ## 추후 업데이트 예정 목록
 
 1. IP 출력
-    - Local 환경에서 실험시 접속 IP가 localhost로 고정된다.
+    - remoteAddress를 통해 IP를 출력할 수 있으나, 외부 IP는 아니다.
 
 ## Status Code
 
