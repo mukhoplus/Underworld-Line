@@ -34,9 +34,8 @@ const client = net.connect({port: setting.PORT, host: setting.HOST}, ()=>{
                 if(text === '') return;
                 client.write(JSON.stringify({status: 220, to: `${toUser}`, body: `${text}`}));
             }
-            return;
         }
-        client.write(JSON.stringify({status: 200, body: `${client.name} : ${line}`}));
+        else client.write(JSON.stringify({status: 200, body: `${client.name} : ${line}`}));
     });
 
     client.on('data', (data)=>{
