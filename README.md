@@ -1,7 +1,7 @@
 # Underworld-Line
 
 버그없는 익명 채팅 프로그램을 목표로 합니다.<br>
-Version : 1.4.2
+Version : 1.4.3
 
 ## 사용법
 
@@ -46,7 +46,9 @@ Version : 1.4.2
         - ``/users`` : 현재 인원, 아이디 출력
         - ``/w ID TEXT`` : ID에게 귓속말 전송
     - 서버 명령어
-        - ``/kick ID`` : 해당 유저를 추방한다.
+        - ``/kick ID`` : 해당 유저를 추방
+3. 아이디 유효 검사 정규표현식 도입
+    - 귓속말 로직을 정규표현식으로 교체하려했으나, 아직 명령어의 개수가 적어 정규표현식의 도입이 굳이 필요없는 것 같았음
 
 ## 추후 업데이트 예정 목록
 
@@ -76,6 +78,5 @@ Version : 1.4.2
 
 1. 서버 관리자 기능
     - IP 밴
-2. 귓속말 로직 정규표현식으로 교체 -> 아직 명령어의 개수가 적어 정규표현식의 도입이 굳이 필요없는 것 같다.
-3. 모든 기능이 검증될 경우 log 정보 저장 및 Database로 회원가입 도입
-4. 해결: [윈도우에서 안됨](https://velog.io/@whoyoung90/TIL-25-WECODE-React-LUSH-Cloning-npm-install%EC%98%A4%EB%A5%98-%ED%95%B4%EA%B2%B0)
+2. 모든 기능이 검증될 경우 log 정보 저장 및 Database로 회원가입 도입
+3. 해결: [윈도우에서 안됨](https://velog.io/@whoyoung90/TIL-25-WECODE-React-LUSH-Cloning-npm-install%EC%98%A4%EB%A5%98-%ED%95%B4%EA%B2%B0)

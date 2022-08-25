@@ -17,7 +17,6 @@ const client = net.connect({port: setting.PORT, host: setting.HOST}, ()=>{
     rl.on('line', (line)=>{
         if(line === '') return;
         if(!client.name){ // if(!login)
-            client.name = line;
             client.write(JSON.stringify({status: 100, body: `${line}`}));
             return;
         }
@@ -43,6 +42,7 @@ const client = net.connect({port: setting.PORT, host: setting.HOST}, ()=>{
 
         switch(d.status){
             case 101: // 로그인 승인
+                client.name = d.body; // login = true;
                 console.log(chalk.blue(`${d.body}님이 들어왔습니다.`));
             break;
             case 110: // 로그인-아이디 중복
@@ -82,7 +82,8 @@ const client = net.connect({port: setting.PORT, host: setting.HOST}, ()=>{
     });
 
     client.on('error', (err)=>{
-        console.log(chalk.red(`서버에 오류가 발생했습니다.`));
+        // console.log(chalk.red(`서버에 오류가 발생했습니다.`));
+        console.log(chalk.red(`서버와 연결이 끊겼습니다.`));
         process.exit();
     });
 

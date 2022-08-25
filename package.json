@@ -1,6 +1,6 @@
 {
   "name": "underworld-line",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "description": "버그없는 익명 채팅 프로그램을 목표로 합니다.",
   "main": "client.js",
   "type": "module",

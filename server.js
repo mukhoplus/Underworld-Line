@@ -25,17 +25,17 @@ const server = net.createServer((client)=>{
                     client.write(JSON.stringify({status: 110, body: '중복된 아이디입니다. 다시 시도하세요.'}));
                     return;
                 }
-                if(String(d.body).startsWith('/') || String(d.body).includes(' ')){
+
+                if(d.body !== d.body.replace(/[\s|\/]/g, '')){
                     client.write(JSON.stringify({status: 111, body: '사용할 수 없는 아이디입니다. 다시 시도하세요.'}));
                     return;
                 }
-                
-                client.name = d.body; // client: login = true
 
+                client.name = d.body;
                 users.push(client);
                 console.log(utils.getCount(users));
                 console.log(chalk.blue(`[${curTime}] ${client.name}님이 접속했어요.(IP 주소 : ${client.remoteAddress})`));
-                for(let user of users) user.write(JSON.stringify({status: 101, body: `${client.name}`}));
+                for(let user of users) user.write(JSON.stringify({status: 101, body: `${client.name}`}));    
             break;
             case 200: // 채팅 전송 요청
                 console.log(chalk.green(`[${curTime}] ${d.body}`));
@@ -93,7 +93,7 @@ server.listen(setting.PORT, '0.0.0.0', ()=>{
 
     rl.on('line', (line)=>{
         if(line === '') return;
-
+        
         if(line.startsWith('/')){
             if(line === '/users'){
                 console.log(utils.commandUsers(users));
