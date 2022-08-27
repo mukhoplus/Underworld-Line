@@ -35,7 +35,13 @@ const server = net.createServer((client)=>{
                 users.push(client);
                 console.log(utils.getCount(users));
                 console.log(chalk.blue(`[${curTime}] ${client.name}님이 접속했어요.(IP 주소 : ${client.remoteAddress})`));
-                for(let user of users) user.write(JSON.stringify({status: 101, body: `${client.name}`}));    
+                for(let user of users){
+                    if(user.name === client.name){
+                        user.write(JSON.stringify({status: 101, body: `${client.name}`}));
+                        continue;
+                    }
+                    user.write(JSON.stringify({status: 102, body: `${client.name}`}));
+                }   
             break;
             case 200: // 채팅 전송 요청
                 console.log(chalk.green(`[${curTime}] ${d.body}`));
@@ -84,6 +90,9 @@ const server = net.createServer((client)=>{
         // 일반적인 종료 상황
         console.log(chalk.blue(`[${curTime}] ${client.name}님이 퇴장했어요.`));
         for(let user of users) user.write(JSON.stringify({status: 150, body: `${client.name}`}));
+    });
+
+    client.on('error', (err)=>{
     });
 });
 
