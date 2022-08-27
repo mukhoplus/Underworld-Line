@@ -44,7 +44,7 @@ const client = net.connect({port: setting.PORT, host: setting.HOST}, ()=>{
             case 101: // 로그인 승인
                 client.name = d.body;
             case 102: // 로그인 알림
-                console.log(chalk.blue(`${d.body}님이 들어왔습니다.`));
+                console.log(chalk.blue(`${d.body}님이 입장했습니다.`));
             break;
             case 110: // 로그인-아이디 중복
             case 111: // 로그인-사용할 수 없는 문자 사용

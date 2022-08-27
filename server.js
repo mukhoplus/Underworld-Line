@@ -34,7 +34,7 @@ const server = net.createServer((client)=>{
                 client.name = d.body;
                 users.push(client);
                 console.log(utils.getCount(users));
-                console.log(chalk.blue(`[${curTime}] ${client.name}님이 접속했어요.(IP 주소 : ${client.remoteAddress})`));
+                console.log(chalk.blue(`[${curTime}] ${client.name}님이 입장했어요.(IP 주소 : ${client.remoteAddress})`));
                 for(let user of users){
                     if(user.name === client.name){
                         user.write(JSON.stringify({status: 101, body: `${client.name}`}));
@@ -93,6 +93,7 @@ const server = net.createServer((client)=>{
     });
 
     client.on('error', (err)=>{
+
     });
 });
 
@@ -106,6 +107,10 @@ server.listen(setting.PORT, '0.0.0.0', ()=>{
         if(line.startsWith('/')){
             if(line === '/users'){
                 console.log(utils.commandUsers(users));
+            }
+            else if(line === '/shutdown'){
+                console.log(chalk.blue(`[${utils.getCurrentTime()}] 서버를 닫습니다.`));
+                process.exit();
             }
             else if(line.startsWith('/w ')){
                 const cmd = line.split(' ');
