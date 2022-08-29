@@ -44,10 +44,11 @@ const server = net.createServer((client)=>{
                 }   
             break;
             case 200: // 채팅 전송 요청
-                console.log(chalk.green(`[${curTime}] ${d.body}`));
+                console.log(chalk.green(`[${curTime}] ${d.id} : ${d.body}`));
                 for(let user of users){
-                    if(client.name === user.name) continue; // 본인에게는 전송하지 않음
-                    user.write(JSON.stringify({status: 201, body: `${d.body}`}));
+                    let id = client.name === user.name ? chalk.cyan(d.id) : chalk.hex('#FF8800')(d.id);
+                    let text = chalk.green(d.body);
+                    user.write(JSON.stringify({status: 201, body: `${chalk.bold(id)} : ${text}`}));
                 }
             break;
             case 210: // 명령어 전송 요청

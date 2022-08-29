@@ -1,7 +1,7 @@
 # Underworld-Line
 
 버그없는 익명 채팅 프로그램을 목표로 합니다.<br>
-Version : 1.5.0
+Version : 1.5.1
 
 ## 사용법
 
@@ -57,6 +57,8 @@ Version : 1.5.0
 
 1. IP 출력
     - remoteAddress를 통해 IP를 출력할 수 있으나, 외부 IP는 아니다.
+2. Server, Client 간 API 정리
+    - 
 
 ## Status Code
 

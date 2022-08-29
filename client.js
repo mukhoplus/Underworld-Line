@@ -34,7 +34,7 @@ const client = net.connect({port: setting.PORT, host: setting.HOST}, ()=>{
                 client.write(JSON.stringify({status: 220, to: `${toUser}`, body: `${text}`}));
             }
         }
-        else client.write(JSON.stringify({status: 200, body: `${client.name} : ${line}`}));
+        else client.write(JSON.stringify({status: 200, id: client.name, body: line}));
     });
 
     client.on('data', (data)=>{
@@ -55,8 +55,6 @@ const client = net.connect({port: setting.PORT, host: setting.HOST}, ()=>{
                 console.log(chalk.blue(`${d.body}님이 퇴장했습니다.`));
             break;
             case 201: // 채팅 전송
-                console.log(chalk.green(d.body));
-            break;
             case 211: // 명령어 전송 승인
                 console.log(d.body);
             break;
@@ -70,7 +68,7 @@ const client = net.connect({port: setting.PORT, host: setting.HOST}, ()=>{
                 console.log(chalk.yellow(`To Server : ${d.body}`));
             break;
             case 250: // 공지 전송
-                console.log(chalk.yellow(d.body));
+                console.log(chalk.yellow.bold(d.body));
             break;
             case 300: // 유저 강퇴
                 console.log(chalk.red(d.body));
