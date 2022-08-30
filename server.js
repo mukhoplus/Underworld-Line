@@ -44,9 +44,9 @@ const server = net.createServer((client)=>{
                 }   
             break;
             case 200: // 채팅 전송 요청
-                console.log(chalk.green(`[${curTime}] ${d.id} : ${d.body}`));
+                console.log(chalk.green(`[${curTime}] ${d.fromID} : ${d.body}`));
                 for(let user of users){
-                    let id = client.name === user.name ? chalk.cyan(d.id) : chalk.hex('#FF8800')(d.id);
+                    let id = client.name === user.name ? chalk.cyan(d.fromID) : chalk.hex('#FF8800')(d.fromID);
                     let text = chalk.green(d.body);
                     user.write(JSON.stringify({status: 201, body: `${chalk.bold(id)} : ${text}`}));
                 }
@@ -56,7 +56,7 @@ const server = net.createServer((client)=>{
                 client.write(JSON.stringify({status: 211, body: `${result}`}));
             break;
             case 220: // 귓속말 전송 요청
-                const index = curUsers.indexOf(d.to);
+                const index = curUsers.indexOf(d.toID);
                 if(index === -1){
                     client.write(JSON.stringify({status: 222, body: '전송할 ID가 없습니다.'}));
                     return;

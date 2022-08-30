@@ -31,10 +31,10 @@ const client = net.connect({port: setting.PORT, host: setting.HOST}, ()=>{
 
                 const text = cmd.slice(2).join(' ');
                 if(text === '') return;
-                client.write(JSON.stringify({status: 220, to: `${toUser}`, body: `${text}`}));
+                client.write(JSON.stringify({status: 220, toID: `${toUser}`, body: `${text}`}));
             }
         }
-        else client.write(JSON.stringify({status: 200, id: client.name, body: line}));
+        else client.write(JSON.stringify({status: 200, fromID: client.name, body: line}));
     });
 
     client.on('data', (data)=>{
@@ -65,7 +65,8 @@ const client = net.connect({port: setting.PORT, host: setting.HOST}, ()=>{
                 console.log(chalk.red(d.body));
             break;
             case 225: // 서버 귓속말 전송
-                console.log(chalk.yellow(`To Server : ${d.body}`));
+                let toServer = chalk.bold('To Server');
+                console.log(chalk.yellow(`${toServer} : ${d.body}`));
             break;
             case 250: // 공지 전송
                 console.log(chalk.yellow.bold(d.body));
