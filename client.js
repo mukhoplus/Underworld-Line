@@ -16,6 +16,7 @@ const client = net.connect({port: setting.PORT, host: setting.HOST}, ()=>{
 
     rl.on('line', (line)=>{
         if(line === '') return;
+
         if(!client.name){ // if(!login)
             client.write(JSON.stringify({status: 100, body: `${line}`}));
             return;
@@ -34,7 +35,10 @@ const client = net.connect({port: setting.PORT, host: setting.HOST}, ()=>{
                 client.write(JSON.stringify({status: 220, toID: `${toUser}`, body: `${text}`}));
             }
         }
-        else client.write(JSON.stringify({status: 200, fromID: client.name, body: line}));
+        else{
+            if(line.match(/\S/) === null) return;
+            client.write(JSON.stringify({status: 200, fromID: client.name, body: line}));
+        }
     });
 
     client.on('data', (data)=>{
