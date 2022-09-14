@@ -55,10 +55,13 @@ Version : 1.5.2
 
 ## 추후 업데이트 예정 목록
 
-1. IP 출력
+1. 스페이스바 도배 방지
+    - 정규표현식을 이용해 로직을 추가할 예정입니다.
+2. IP 출력
     - remoteAddress를 통해 IP를 출력할 수 있으나, 외부 IP는 아니다.
-2. Server, Client 간 API 정리
-    - 
+3. Server, Client 간 API 정리
+4. 원인을 알 수 없는 오류를 발견했습니다.
+    - undefined:1 GET / HTTP/1.1
 
 ## Status Code
 
