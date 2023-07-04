@@ -74,7 +74,7 @@ const client = net.connect({ port: setting.PORT, host: setting.HOST }, () => {
         console.log(chalk.red(d.body));
         break;
       case 225: // 서버 귓속말 전송
-        let toServer = chalk.bold("To Server");
+        let toServer = chalk.bold("From Server");
         console.log(chalk.yellow(`${toServer} : ${d.body}`));
         break;
       case 250: // 공지 전송
