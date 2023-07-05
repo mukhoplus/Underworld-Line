@@ -231,6 +231,8 @@ server.listen(setting.PORT, "0.0.0.0", () => {
         }
       } else if (line === "/help") {
         console.log(utils.commandListByServer());
+      } else if (line === "/time") {
+        console.log(chalk.blue(`현재 서버 시간: ${utils.getCurrentTime()}`));
       }
     } else
       for (let user of users)
