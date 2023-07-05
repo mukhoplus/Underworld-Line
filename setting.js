@@ -1,4 +1,4 @@
 export default class setting {
-  static HOST = "34.83.44.210";
+  static HOST = "127.0.0.1";
   static PORT = 2022;
 }

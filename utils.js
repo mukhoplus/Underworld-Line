@@ -41,4 +41,28 @@ export default class utils {
       result += "\n" + chalk.blue(this.getCurrentUserList(users));
     return result;
   }
+
+  static commandListByServer() {
+    const result =
+      chalk.magenta("[명령어 목록]\n") +
+      chalk.yellow(
+        "- 서버/클라이언트 명령어\n  - /users : 현재 인원, 아이디 출력\n  - /w ID TEXT : ID에게 귓속말 전송\n  - /help : 명령어 목록 출력\n"
+      ) +
+      chalk.yellow(
+        "- 서버 명령어\n  - /kick ID : 해당 유저를 추방\n  - /shutdown : 서버를 종료\n"
+      ) +
+      chalk.yellow(
+        "- 클라이언트 명령어\n  - /quit : 프로그램 종료(Control + C)"
+      );
+    return result;
+  }
+
+  static commandListByClient() {
+    const result =
+      chalk.magenta("[명령어 목록]\n") +
+      chalk.yellow(
+        "  - /users : 현재 인원, 아이디 출력\n  - /w ID TEXT : ID에게 귓속말 전송\n  - /help : 명령어 목록 출력\n  - /quit : 프로그램 종료(Control + C)"
+      );
+    return result;
+  }
 }

@@ -1,6 +1,7 @@
 import net from "net";
 import chalk from "chalk";
 import readline from "readline";
+import utils from "./utils.js";
 import setting from "./setting.js";
 
 const rl = readline.createInterface({
@@ -26,6 +27,7 @@ const client = net.connect({ port: setting.PORT, host: setting.HOST }, () => {
     if (line.startsWith("/")) {
       if (line === "/users")
         client.write(JSON.stringify({ status: 210, body: `${line}` }));
+      else if (line === "/quit") client.destroy();
       else if (line.startsWith("/w ")) {
         const cmd = line.split(" ");
 
@@ -37,7 +39,7 @@ const client = net.connect({ port: setting.PORT, host: setting.HOST }, () => {
         client.write(
           JSON.stringify({ status: 220, toID: `${toUser}`, body: `${text}` })
         );
-      }
+      } else if (line === "/help") console.log(utils.commandListByClient());
     } else {
       if (line.match(/\S/) === null) return;
       client.write(

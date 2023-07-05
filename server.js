@@ -15,10 +15,10 @@ const server = net.createServer((client) => {
   client.setEncoding("utf8");
 
   client.on("data", (data) => {
+    const curTime = utils.getCurrentTime();
+    const curUsers = utils.getCurrentUserList(users);
     try {
       let d = JSON.parse(data);
-      const curTime = utils.getCurrentTime();
-      const curUsers = utils.getCurrentUserList(users);
 
       switch (d.status) {
         case 100: // 로그인 요청
@@ -120,10 +120,14 @@ const server = net.createServer((client) => {
       }
     } catch (error) {
       console.log(chalk.red(`[${curTime}] 의문의 에러\n${error}`));
-    } finally {
+
       if (client.name === undefined) return;
       const index = users.indexOf(client);
       users.splice(index, 1);
+
+      console.log(chalk.blue(`[${curTime}] ${client.name}님이 퇴장했어요.`));
+      for (let user of users)
+        user.write(JSON.stringify({ status: 150, body: `${client.name}` }));
     }
   });
 
@@ -210,10 +214,13 @@ server.listen(setting.PORT, "0.0.0.0", () => {
             : ((status = 310), (text = `${kickUser}님이 강퇴당했습니다.`));
           user.write(JSON.stringify({ status: status, body: `${text}` }));
         }
-      }
-    } else
-      for (let user of users)
-        user.write(JSON.stringify({ status: 250, body: `[Notice] ${line}` }));
+      } else if (line === "/help") {
+        console.log("zzz");
+        console.log(utils.commandListByServer());
+      } else
+        for (let user of users)
+          user.write(JSON.stringify({ status: 250, body: `[Notice] ${line}` }));
+    }
   });
 
   server.on("error", (err) => {
