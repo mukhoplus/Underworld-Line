@@ -151,6 +151,21 @@ const server = net.createServer((client) => {
   });
 
   client.on("error", (err) => {});
+
+  client.on("timeout", () => {
+    if (client.name === undefined) return;
+
+    const curTime = utils.getCurrentTime();
+    const index = users.indexOf(client);
+    users.splice(index, 1);
+    console.log(utils.getCount(users));
+
+    console.log(
+      chalk.blue(`[${curTime}] ${client.name}님이 잠수로 인해 종료됐어요.`)
+    );
+    for (let user of users)
+      user.write(JSON.stringify({ status: 150, body: `${client.name}` }));
+  });
 });
 
 server.listen(setting.PORT, "0.0.0.0", () => {
