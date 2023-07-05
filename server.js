@@ -231,10 +231,10 @@ server.listen(setting.PORT, "0.0.0.0", () => {
         }
       } else if (line === "/help") {
         console.log(utils.commandListByServer());
-      } else
-        for (let user of users)
-          user.write(JSON.stringify({ status: 250, body: `[Notice] ${line}` }));
-    }
+      }
+    } else
+      for (let user of users)
+        user.write(JSON.stringify({ status: 250, body: `[Notice] ${line}` }));
   });
 
   server.on("error", (err) => {
