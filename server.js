@@ -15,102 +15,115 @@ const server = net.createServer((client) => {
   client.setEncoding("utf8");
 
   client.on("data", (data) => {
-    let d = JSON.parse(data);
-    const curTime = utils.getCurrentTime();
-    const curUsers = utils.getCurrentUserList(users);
+    try {
+      let d = JSON.parse(data);
+      const curTime = utils.getCurrentTime();
+      const curUsers = utils.getCurrentUserList(users);
 
-    switch (d.status) {
-      case 100: // 로그인 요청
-        if (curUsers.includes(d.body)) {
-          client.write(
-            JSON.stringify({
-              status: 110,
-              body: "중복된 아이디입니다. 다시 시도하세요.",
-            })
-          );
-          return;
-        }
-
-        if (/[\s|\/]/.test(d.body)) {
-          client.write(
-            JSON.stringify({
-              status: 111,
-              body: "사용할 수 없는 아이디입니다. 다시 시도하세요.",
-            })
-          );
-          return;
-        }
-
-        client.name = d.body;
-        users.push(client);
-        console.log(utils.getCount(users));
-        console.log(
-          chalk.blue(
-            `[${curTime}] ${client.name}님이 입장했어요.(IP 주소 : ${client.remoteAddress})`
-          )
-        );
-        for (let user of users) {
-          if (user.name === client.name) {
-            user.write(JSON.stringify({ status: 101, body: `${client.name}` }));
-            continue;
+      switch (d.status) {
+        case 100: // 로그인 요청
+          if (curUsers.includes(d.body)) {
+            client.write(
+              JSON.stringify({
+                status: 110,
+                body: "중복된 아이디입니다. 다시 시도하세요.",
+              })
+            );
+            return;
           }
-          user.write(JSON.stringify({ status: 102, body: `${client.name}` }));
-        }
-        break;
-      case 200: // 채팅 전송 요청
-        console.log(chalk.green(`[${curTime}] ${d.fromID} : ${d.body}`));
-        for (let user of users) {
-          let id =
-            client.name === user.name
-              ? chalk.cyan(d.fromID)
-              : chalk.hex("#FF8800")(d.fromID);
-          let text = chalk.green(d.body);
-          user.write(
-            JSON.stringify({ status: 201, body: `${chalk.bold(id)} : ${text}` })
-          );
-        }
-        break;
-      case 210: // 명령어 전송 요청
-        const result = utils.commandUsers(users);
-        client.write(JSON.stringify({ status: 211, body: `${result}` }));
-        break;
-      case 220: // 귓속말 전송 요청
-        const index = curUsers.indexOf(d.toID);
-        if (index === -1) {
-          client.write(
-            JSON.stringify({ status: 222, body: "전송할 ID가 없습니다." })
-          );
-          return;
-        }
 
-        // 해당 유저가 있으면 dm 전송
-        const selectedUser = users[index];
-        if (client.name === selectedUser.name) {
-          // 단, 본인에게는 전송하지 못함.
+          if (/[\s|\/]/.test(d.body)) {
+            client.write(
+              JSON.stringify({
+                status: 111,
+                body: "사용할 수 없는 아이디입니다. 다시 시도하세요.",
+              })
+            );
+            return;
+          }
+
+          client.name = d.body;
+          users.push(client);
+          console.log(utils.getCount(users));
+          console.log(
+            chalk.blue(
+              `[${curTime}] ${client.name}님이 입장했어요.(IP 주소 : ${client.remoteAddress})`
+            )
+          );
+          for (let user of users) {
+            if (user.name === client.name) {
+              user.write(
+                JSON.stringify({ status: 101, body: `${client.name}` })
+              );
+              continue;
+            }
+            user.write(JSON.stringify({ status: 102, body: `${client.name}` }));
+          }
+          break;
+        case 200: // 채팅 전송 요청
+          console.log(chalk.green(`[${curTime}] ${d.fromID} : ${d.body}`));
+          for (let user of users) {
+            let id =
+              client.name === user.name
+                ? chalk.cyan(d.fromID)
+                : chalk.hex("#FF8800")(d.fromID);
+            let text = chalk.green(d.body);
+            user.write(
+              JSON.stringify({
+                status: 201,
+                body: `${chalk.bold(id)} : ${text}`,
+              })
+            );
+          }
+          break;
+        case 210: // 명령어 전송 요청
+          const result = utils.commandUsers(users);
+          client.write(JSON.stringify({ status: 211, body: `${result}` }));
+          break;
+        case 220: // 귓속말 전송 요청
+          const index = curUsers.indexOf(d.toID);
+          if (index === -1) {
+            client.write(
+              JSON.stringify({ status: 222, body: "전송할 ID가 없습니다." })
+            );
+            return;
+          }
+
+          // 해당 유저가 있으면 dm 전송
+          const selectedUser = users[index];
+          if (client.name === selectedUser.name) {
+            // 단, 본인에게는 전송하지 못함.
+            selectedUser.write(
+              JSON.stringify({
+                status: 222,
+                body: "본인에게는 DM을 보낼 수 없습니다.",
+              })
+            );
+            return;
+          }
+
           selectedUser.write(
             JSON.stringify({
-              status: 222,
-              body: "본인에게는 DM을 보낼 수 없습니다.",
+              status: 221,
+              body: `DM) ${client.name} : ${d.body}`,
             })
           );
-          return;
-        }
-
-        selectedUser.write(
-          JSON.stringify({
-            status: 221,
-            body: `DM) ${client.name} : ${d.body}`,
-          })
-        );
-        console.log(
-          chalk.magenta(
-            `[${curTime}] ${client.name} 유저가 ${selectedUser.name} 유저에게 DM을 보냈어요 -> ${d.body}`
-          )
-        );
-        client.write(
-          JSON.stringify({ status: 221, body: "DM 전송에 성공했습니다." })
-        );
-        break;
+          console.log(
+            chalk.magenta(
+              `[${curTime}] ${client.name} 유저가 ${selectedUser.name} 유저에게 DM을 보냈어요 -> ${d.body}`
+            )
+          );
+          client.write(
+            JSON.stringify({ status: 221, body: "DM 전송에 성공했습니다." })
+          );
+          break;
+      }
+    } catch (error) {
+      console.log(chalk.red(`[${curTime}] 의문의 에러\n${error}`));
+    } finally {
+      if (client.name === undefined) return;
+      const index = users.indexOf(client);
+      users.splice(index, 1);
     }
   });
 
