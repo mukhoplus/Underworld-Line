@@ -215,7 +215,6 @@ server.listen(setting.PORT, "0.0.0.0", () => {
           user.write(JSON.stringify({ status: status, body: `${text}` }));
         }
       } else if (line === "/help") {
-        console.log("zzz");
         console.log(utils.commandListByServer());
       } else
         for (let user of users)
