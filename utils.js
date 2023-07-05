@@ -49,7 +49,7 @@ export default class utils {
         "- 서버/클라이언트 명령어\n  - /users : 현재 인원, 아이디 출력\n  - /w ID TEXT : ID에게 귓속말 전송\n  - /help : 명령어 목록 출력\n"
       ) +
       chalk.yellow(
-        "- 서버 명령어\n  - /kick ID : 해당 유저를 추방\n  - /shutdown : 서버를 종료\n"
+        "- 서버 명령어\n  - /kick ID : 해당 유저를 추방\n  - /shutdown : 서버를 종료\n  - /time : 현재 서버 시간 출력\n"
       ) +
       chalk.yellow(
         "- 클라이언트 명령어\n  - /quit : 프로그램 종료(Control + C)"
